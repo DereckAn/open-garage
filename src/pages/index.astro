@@ -1,17 +1,16 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Home">
+  <main class="grid min-h-screen place-items-center bg-slate-950 p-6 text-white">
+    <section class="w-full max-w-lg rounded-2xl bg-slate-900 p-8 shadow-2xl ring-1 ring-white/10">
+      <p class="text-sm font-semibold uppercase tracking-widest text-cyan-400">Tailwind test</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight">Tailwind CSS is working.</h1>
+      <p class="mt-4 text-slate-300">These colors, spacing, typography, and responsive styles are Tailwind utility classes.</p>
+      <a class="mt-6 inline-flex rounded-lg bg-cyan-400 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-300" href="#tailwind-test">
+        Test button
+      </a>
+    </section>
+  </main>
+</Layout>
