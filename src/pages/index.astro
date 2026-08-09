@@ -1,16 +1,115 @@
 ---
 import Layout from '../layouts/Layout.astro';
+// Mock list — later this comes from config / AWS
+const doors = [
+  { id: 'principal', name: 'Garage principal', open: false },
+  { id: 'lateral', name: 'Puerta lateral', open: true },
+];
 ---
+<Layout title="Garage">
+  <main class="min-h-screen bg-slate-950 p-6 text-white">
+    <div class="mx-auto w-full max-w-md">
+      <header class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">Mis puertas</h1>
+          <p class="text-sm text-slate-400">{doors.length} dispositivos</p>
+        </div>
+        <button class="grid h-10 w-10 place-items-center rounded-lg bg-slate-900 text-slate-300 ring-1 ring-white/10">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        </button>
+      </header>
 
-<Layout title="Home">
-  <main class="grid min-h-screen place-items-center bg-slate-950 p-6 text-white">
-    <section class="w-full max-w-lg rounded-2xl bg-slate-900 p-8 shadow-2xl ring-1 ring-white/10">
-      <p class="text-sm font-semibold uppercase tracking-widest text-cyan-400">Tailwind test</p>
-      <h1 class="mt-3 text-4xl font-bold tracking-tight">Tailwind CSS is working.</h1>
-      <p class="mt-4 text-slate-300">These colors, spacing, typography, and responsive styles are Tailwind utility classes.</p>
-      <a class="mt-6 inline-flex rounded-lg bg-cyan-400 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-300" href="#tailwind-test">
-        Test button
-      </a>
-    </section>
+      <ul class="mt-6 space-y-3">
+        {doors.map((d) => (
+          <li class="door flex items-center gap-4 rounded-xl bg-slate-900 p-4 text-left ring-1 ring-white/10 transition hover:ring-cyan-400/40"
+              data-id={d.id} data-name={d.name} data-open={String(d.open)} role="button" tabindex="0">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-slate-800 text-cyan-400">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V9l9-5 9 5v12" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="12" width="10" height="9" rx="1"/></svg>
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-semibold">{d.name}</p>
+              <p class="state text-sm text-slate-400">{d.open ? 'Abierto' : 'Cerrado'}</p>
+            </div>
+            <svg class="h-5 w-5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Modal: visual door (from layout 3) -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center">
+      <section class="w-full max-w-sm rounded-2xl bg-slate-900 p-6 text-center ring-1 ring-white/10">
+        <div class="flex items-center justify-between">
+          <h2 id="m-name" class="text-lg font-bold"></h2>
+          <button id="m-close" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-800">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="mx-auto mt-6 h-48 w-48 overflow-hidden rounded-t-lg border-4 border-slate-700 bg-slate-800">
+          <div id="m-panel" class="flex h-full flex-col gap-1 p-1 transition-transform duration-700 ease-in-out">
+            <span class="flex-1 rounded bg-slate-600"></span>
+            <span class="flex-1 rounded bg-slate-600"></span>
+            <span class="flex-1 rounded bg-slate-600"></span>
+            <span class="flex-1 rounded bg-slate-600"></span>
+          </div>
+        </div>
+        <div class="mx-auto h-2 w-56 -translate-y-1 rounded bg-slate-700"></div>
+
+        <p id="m-status" class="mt-5 text-lg font-semibold"></p>
+
+        <button id="m-toggle" class="mt-5 w-full rounded-xl py-4 text-lg font-bold transition active:scale-[.98]"></button>
+      </section>
+    </div>
   </main>
+
+  <script is:inline>
+    const modal = document.getElementById('modal');
+    const mName = document.getElementById('m-name');
+    const mPanel = document.getElementById('m-panel');
+    const mStatus = document.getElementById('m-status');
+    const mToggle = document.getElementById('m-toggle');
+    let active = null; // the <li> currently in the modal
+
+    const paintCard = (li) => {
+      li.querySelector('.state').textContent = li.dataset.open === 'true' ? 'Abierto' : 'Cerrado';
+    };
+    const paintModal = () => {
+      const open = active.dataset.open === 'true';
+      mPanel.style.transform = open ? 'translateY(-95%)' : 'translateY(0)';
+      mStatus.textContent = open ? 'Abierto' : 'Cerrado';
+      mStatus.className = 'mt-5 text-lg font-semibold ' + (open ? 'text-emerald-400' : 'text-slate-300');
+      mToggle.textContent = open ? 'Cerrar puerta' : 'Abrir puerta';
+      mToggle.className = 'mt-5 w-full rounded-xl py-4 text-lg font-bold transition active:scale-[.98] ' +
+        (open ? 'bg-slate-800 text-slate-100' : 'bg-cyan-400 text-slate-950');
+    };
+    const openModal = (li) => {
+      active = li;
+      mName.textContent = li.dataset.name;
+      mPanel.style.transitionDuration = '0ms';
+      paintModal();
+      requestAnimationFrame(() => { mPanel.style.transitionDuration = '700ms'; });
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      active = null;
+    };
+
+    document.querySelectorAll('.door').forEach((li) => {
+      paintCard(li);
+      li.addEventListener('click', () => openModal(li));
+      li.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(li); } });
+    });
+    mToggle.addEventListener('click', () => {
+      active.dataset.open = String(active.dataset.open !== 'true');
+      paintModal();
+      paintCard(active);
+    });
+    document.getElementById('m-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && active) closeModal(); });
+  </script>
 </Layout>
