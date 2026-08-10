@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { UserButton } from '@clerk/astro/components';
 // Mock list — later this comes from config / AWS
 const doors = [
   { id: 'principal', name: 'Garage principal', open: false },
@@ -14,9 +15,7 @@ const doors = [
           <h1 class="text-2xl font-bold">Mis puertas</h1>
           <p class="text-sm text-slate-400">{doors.length} dispositivos</p>
         </div>
-        <button class="grid h-10 w-10 place-items-center rounded-lg bg-slate-900 text-slate-300 ring-1 ring-white/10">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-        </button>
+        <UserButton />
       </header>
 
       <ul class="mt-6 space-y-3">
