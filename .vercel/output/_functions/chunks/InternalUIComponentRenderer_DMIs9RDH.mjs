@@ -1,6 +1,6 @@
 import { C as createAstro, d as renderTemplate, f as maybeRenderHead, h as defineScriptVars, m as addAttribute } from "./server_BYabhWdN.mjs";
 import { t as createComponent } from "./compiler_CuWtlv9o.mjs";
-import { t as generateSafeId } from "./internal_CR2gbIKf.mjs";
+import { t as generateSafeId } from "./internal_DxJB5Eah.mjs";
 //#region node_modules/@clerk/astro/components/interactive/InternalUIComponentRenderer.astro
 createAstro("https://astro.build");
 var $$InternalUIComponentRenderer = createComponent(($$result, $$props, $$slots) => {

@@ -1,4 +1,4 @@
-import { n as runInjectionScript } from "../internal_CR2gbIKf.mjs";
+import { n as runInjectionScript } from "../internal_DxJB5Eah.mjs";
 //#region astro:scripts/before-hydration.js
 await runInjectionScript({ "sdkMetadata": {
 	"version": "4.0.16",

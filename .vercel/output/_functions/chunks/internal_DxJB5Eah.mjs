@@ -242,7 +242,7 @@ var mergeEnvVarsWithParams = (params) => {
 		isSatellite: paramSatellite || void 0,
 		proxyUrl: paramProxy || void 0,
 		domain: paramDomain || void 0,
-		publishableKey: paramPublishableKey || internalOptions?.publishableKey || "pk_test_xxx",
+		publishableKey: paramPublishableKey || internalOptions?.publishableKey || "pk_test_YnJpZ2h0LW9jdG9wdXMtNTYxMS5jbGVyay5hY2NvdW50cy5kZXYk",
 		__internal_clerkJSUrl: paramClerkJSUrl || void 0,
 		__internal_clerkJSVersion: paramClerkJSVersion || void 0,
 		__internal_clerkUIUrl: paramClerkUIUrl || void 0,

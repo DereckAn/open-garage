@@ -1,19 +1,8 @@
+import { t as __exportAll } from "./rolldown-runtime_D7D4PA-g.mjs";
 import { C as createAstro, c as renderSlot, d as renderTemplate, f as maybeRenderHead, g as createRenderInstruction, h as defineScriptVars, i as renderComponent, m as addAttribute } from "./server_BYabhWdN.mjs";
 import { t as createComponent } from "./compiler_CuWtlv9o.mjs";
-import { t as $$Layout } from "./Layout_DQd3kyL1.mjs";
-import { t as $$InternalUIComponentRenderer } from "./InternalUIComponentRenderer_DhBRZvBA.mjs";
-//#region \0rolldown/runtime.js
-var __defProp = Object.defineProperty;
-var __exportAll = (all, no_symbols) => {
-	let target = {};
-	for (var name in all) __defProp(target, name, {
-		get: all[name],
-		enumerable: true
-	});
-	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
-	return target;
-};
-//#endregion
+import { t as $$Layout } from "./Layout_9EHuyJgB.mjs";
+import { t as $$InternalUIComponentRenderer } from "./InternalUIComponentRenderer_DMIs9RDH.mjs";
 //#region node_modules/astro/dist/runtime/server/render/script.js
 async function renderScript(result, id) {
 	const inlined = result.inlinedScripts.get(id);
@@ -227,62 +216,56 @@ var pages_exports = /* @__PURE__ */ __exportAll({
 });
 var $$Index = createComponent(($$result, $$props, $$slots) => {
 	const doors = [{
-		id: "principal",
-		name: "Garage principal",
-		open: false
-	}, {
-		id: "lateral",
-		name: "Puerta lateral",
-		open: true
+		id: "1",
+		name: "Garage principal"
 	}];
-	return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Garage" }, { "default": ($$result) => renderTemplate`${maybeRenderHead($$result)}<main class="min-h-screen bg-slate-950 p-6 text-white"><div class="mx-auto w-full max-w-md"><header class="flex items-center justify-between"><div><h1 class="text-2xl font-bold">Mis puertas</h1><p class="text-sm text-slate-400">${doors.length} dispositivos</p></div>${renderComponent($$result, "UserButton", UserButton, {})}</header><ul class="mt-6 space-y-3">${doors.map((d) => renderTemplate`<li class="door flex items-center gap-4 rounded-xl bg-slate-900 p-4 text-left ring-1 ring-white/10 transition hover:ring-cyan-400/40"${addAttribute(d.id, "data-id")}${addAttribute(d.name, "data-name")}${addAttribute(String(d.open), "data-open")} role="button" tabindex="0"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-slate-800 text-cyan-400"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V9l9-5 9 5v12" stroke-linecap="round" stroke-linejoin="round"></path><rect x="7" y="12" width="10" height="9" rx="1"></rect></svg></span><div class="min-w-0 flex-1"><p class="truncate font-semibold">${d.name}</p><p class="state text-sm text-slate-400">${d.open ? "Abierto" : "Cerrado"}</p></div><svg class="h-5 w-5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg></li>`)}</ul></div><!-- Modal: visual door (from layout 3) --><div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"><section class="w-full max-w-sm rounded-2xl bg-slate-900 p-6 text-center ring-1 ring-white/10"><div class="flex items-center justify-between"><h2 id="m-name" class="text-lg font-bold"></h2><button id="m-close" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-800"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></button></div><div class="mx-auto mt-6 h-48 w-48 overflow-hidden rounded-t-lg border-4 border-slate-700 bg-slate-800"><div id="m-panel" class="flex h-full flex-col gap-1 p-1 transition-transform duration-700 ease-in-out"><span class="flex-1 rounded bg-slate-600"></span><span class="flex-1 rounded bg-slate-600"></span><span class="flex-1 rounded bg-slate-600"></span><span class="flex-1 rounded bg-slate-600"></span></div></div><div class="mx-auto h-2 w-56 -translate-y-1 rounded bg-slate-700"></div><p id="m-status" class="mt-5 text-lg font-semibold"></p><button id="m-toggle" class="mt-5 w-full rounded-xl py-4 text-lg font-bold transition active:scale-[.98]"></button></section></div></main><script>
+	return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Garage" }, { "default": async ($$result) => renderTemplate`${maybeRenderHead($$result)}<main class="min-h-screen bg-slate-950 p-6 text-white"><div class="mx-auto w-full max-w-md"><header class="flex items-center justify-between"><div><h1 class="text-2xl font-bold">Mis puertas</h1><p class="text-sm text-slate-400">${doors.length} dispositivo${doors.length === 1 ? "" : "s"}</p></div>${renderComponent($$result, "UserButton", UserButton, {})}</header><ul class="mt-6 space-y-3">${doors.map((d) => renderTemplate`<li class="door flex items-center gap-4 rounded-xl bg-slate-900 p-4 text-left ring-1 ring-white/10 transition hover:ring-cyan-400/40"${addAttribute(d.id, "data-id")}${addAttribute(d.name, "data-name")} role="button" tabindex="0"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-slate-800 text-cyan-400"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V9l9-5 9 5v12" stroke-linecap="round" stroke-linejoin="round"></path><rect x="7" y="12" width="10" height="9" rx="1"></rect></svg></span><div class="min-w-0 flex-1"><p class="truncate font-semibold">${d.name}</p><p class="text-sm text-slate-400">Toque para activar</p></div><svg class="h-5 w-5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg></li>`)}</ul></div><!-- Modal: single toggle action (no open/closed state — the door is a momentary toggle) --><div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"><section class="w-full max-w-sm rounded-2xl bg-slate-900 p-6 text-center ring-1 ring-white/10"><div class="flex items-center justify-between"><h2 id="m-name" class="text-lg font-bold"></h2><button id="m-close" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-800"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></button></div><div class="mx-auto mt-8 grid h-28 w-28 place-items-center rounded-full bg-slate-800 text-cyan-400"><svg class="h-14 w-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V9l9-5 9 5v12" stroke-linecap="round" stroke-linejoin="round"></path><rect x="7" y="12" width="10" height="9" rx="1"></rect></svg></div><p id="m-status" class="mt-6 h-5 text-sm font-medium text-slate-400"></p><button id="m-toggle" class="mt-4 w-full rounded-xl bg-cyan-400 py-4 text-lg font-bold text-slate-950 transition active:scale-[.98] disabled:opacity-50">Activar puerta</button></section></div></main><script>
     const modal = document.getElementById('modal');
     const mName = document.getElementById('m-name');
-    const mPanel = document.getElementById('m-panel');
     const mStatus = document.getElementById('m-status');
     const mToggle = document.getElementById('m-toggle');
-    let active = null; // the <li> currently in the modal
+    let activeId = null;
 
-    const paintCard = (li) => {
-      li.querySelector('.state').textContent = li.dataset.open === 'true' ? 'Abierto' : 'Cerrado';
-    };
-    const paintModal = () => {
-      const open = active.dataset.open === 'true';
-      mPanel.style.transform = open ? 'translateY(-95%)' : 'translateY(0)';
-      mStatus.textContent = open ? 'Abierto' : 'Cerrado';
-      mStatus.className = 'mt-5 text-lg font-semibold ' + (open ? 'text-emerald-400' : 'text-slate-300');
-      mToggle.textContent = open ? 'Cerrar puerta' : 'Abrir puerta';
-      mToggle.className = 'mt-5 w-full rounded-xl py-4 text-lg font-bold transition active:scale-[.98] ' +
-        (open ? 'bg-slate-800 text-slate-100' : 'bg-cyan-400 text-slate-950');
-    };
     const openModal = (li) => {
-      active = li;
+      activeId = li.dataset.id;
       mName.textContent = li.dataset.name;
-      mPanel.style.transitionDuration = '0ms';
-      paintModal();
-      requestAnimationFrame(() => { mPanel.style.transitionDuration = '700ms'; });
+      mStatus.textContent = '';
+      mStatus.className = 'mt-6 h-5 text-sm font-medium text-slate-400';
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     };
     const closeModal = () => {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
-      active = null;
+      activeId = null;
     };
 
     document.querySelectorAll('.door').forEach((li) => {
-      paintCard(li);
       li.addEventListener('click', () => openModal(li));
       li.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(li); } });
     });
-    mToggle.addEventListener('click', () => {
-      active.dataset.open = String(active.dataset.open !== 'true');
-      paintModal();
-      paintCard(active);
+
+    mToggle.addEventListener('click', async () => {
+      if (!activeId) return;
+      mToggle.disabled = true;
+      mStatus.textContent = 'Enviando…';
+      mStatus.className = 'mt-6 h-5 text-sm font-medium text-slate-400';
+      try {
+        const res = await fetch(\`/api/door/\${activeId}\`, { method: 'POST' });
+        if (!res.ok) throw new Error(String(res.status));
+        mStatus.textContent = 'Enviado ✓';
+        mStatus.className = 'mt-6 h-5 text-sm font-medium text-emerald-400';
+      } catch {
+        mStatus.textContent = 'Error al enviar';
+        mStatus.className = 'mt-6 h-5 text-sm font-medium text-rose-400';
+      } finally {
+        setTimeout(() => { mToggle.disabled = false; }, 1500);
+      }
     });
+
     document.getElementById('m-close').addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && active) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && activeId) closeModal(); });
   <\/script>` })}`;
 }, "/home/dereck/Documents/GIT/open-garage/src/pages/index.astro", void 0);
 var $$file = "/home/dereck/Documents/GIT/open-garage/src/pages/index.astro";
@@ -290,4 +273,4 @@ var $$file = "/home/dereck/Documents/GIT/open-garage/src/pages/index.astro";
 //#region \0virtual:astro:page:src/pages/index@_@astro
 var page = () => pages_exports;
 //#endregion
-export { page, __exportAll as t };
+export { page };

@@ -53,11 +53,11 @@ function getContextEnvVar(envVarName, contextOrLocals) {
 		"DEV": false,
 		"MODE": "production",
 		"PROD": true,
-		"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_xxx",
+		"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_YnJpZ2h0LW9jdG9wdXMtNTYxMS5jbGVyay5hY2NvdW50cy5kZXYk",
 		"SITE": void 0,
 		"SSR": true
 	}, {
-		CLERK_SECRET_KEY: "sk_test_xxx",
+		CLERK_SECRET_KEY: "sk_test_41lShaKjQYQhwoFpffeRsRKge1NkAXS1zUW5QzqCF3",
 		_: "/home/dereck/.bun/bin/bunx",
 		LESS: "-R"
 	})[envVarName] || void 0;
@@ -153,11 +153,11 @@ var createClerkClientWithOptions = (context, options) => createClerkClient({
 			"DEV": false,
 			"MODE": "production",
 			"PROD": true,
-			"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_xxx",
+			"PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_YnJpZ2h0LW9jdG9wdXMtNTYxMS5jbGVyay5hY2NvdW50cy5kZXYk",
 			"SITE": void 0,
 			"SSR": true
 		}, {
-			CLERK_SECRET_KEY: "sk_test_xxx",
+			CLERK_SECRET_KEY: "sk_test_41lShaKjQYQhwoFpffeRsRKge1NkAXS1zUW5QzqCF3",
 			_: "/home/dereck/.bun/bin/bunx",
 			LESS: "-R"
 		}).MODE
@@ -460,7 +460,7 @@ var handleControlFlowErrors = (e, clerkRequest, requestState, context) => {
 //#endregion
 //#region src/middleware.ts
 var PUBLIC = [/^\/sign-in(\/|$)/, /^\/not-allowed$/];
-var ALLOWED = new Set("dereckan@churchofjesuschrist.org".split(",").map((s) => s.trim().toLowerCase()).filter(Boolean));
+var ALLOWED = new Set("dereckan@churchofjesuschrist.org,dereck1998angeles@gmail.com".split(",").map((s) => s.trim().toLowerCase()).filter(Boolean));
 var onRequest$1 = clerkMiddleware(async (auth, context) => {
 	if (PUBLIC.some((re) => re.test(context.url.pathname))) return;
 	const { userId, redirectToSignIn } = auth();

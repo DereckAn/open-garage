@@ -1,0 +1,1 @@
+import{t as e}from"../internal.BrhAe5yF.js";await e({sdkMetadata:{version:`4.0.16`,name:`@clerk/astro`,environment:`production`}});
