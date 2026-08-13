@@ -1,3 +1,7 @@
+# firmware secrets + build output
+firmware/garage/secrets.h
+firmware/build/
+
 # build output
 dist/
 # generated types
