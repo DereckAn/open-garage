@@ -23,6 +23,7 @@
 
 // ---- config you may want to tweak ---------------------------------------
 static const char* DOOR_ID   = "1";                 // topic suffix; must match a web door id
+static const int   LED_PIN   = 2;                    // onboard LED (blinks to ack a command)
 static const int   RELAY_PIN = 4;                    // GPIO wired to the relay
 static const bool  RELAY_ACTIVE_LOW = false;         // set true if your relay closes on LOW
 static const int   PULSE_MS  = 400;                  // how long to "hold the button"
@@ -67,6 +68,10 @@ char topic[48];
 String seen[SEEN_SIZE];
 int seenIdx = 0;
 
+// set by the MQTT callback, acted on in loop() — never block the callback itself
+// (blocking there starves the network loop → missed PUBACK → redelivery storm).
+volatile bool pendingToggle = false;
+
 bool alreadySeen(const String& id) {
   for (int i = 0; i < SEEN_SIZE; i++) if (seen[i] == id) return true;
   return false;
@@ -74,6 +79,13 @@ bool alreadySeen(const String& id) {
 void remember(const String& id) {
   seen[seenIdx] = id;
   seenIdx = (seenIdx + 1) % SEEN_SIZE;
+}
+
+void blinkAck() { // visual confirmation a valid command arrived (4 blinks)
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(LED_PIN, HIGH); delay(150);
+    digitalWrite(LED_PIN, LOW);  delay(150);
+  }
 }
 
 void pulseRelay() {
@@ -111,7 +123,7 @@ void onMessage(char* t, byte* payload, unsigned int len) {
 
   if (id.length()) remember(id);
   Serial.printf("TOGGLE by %s\n", (const char*)(doc["by"] | "?"));
-  pulseRelay();
+  pendingToggle = true; // act in loop(); keep this callback fast so PUBACK is sent
 }
 
 void connectWifi() {
@@ -139,6 +151,8 @@ void connectMqtt() {
 
 void setup() {
   Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
   pinMode(RELAY_PIN, OUTPUT);
   digitalWrite(RELAY_PIN, RELAY_ACTIVE_LOW ? HIGH : LOW); // start released
   snprintf(topic, sizeof(topic), "progreso/7a/garagedoor/%s", DOOR_ID);
@@ -152,4 +166,9 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED) connectWifi();
   if (!mqtt.connected()) connectMqtt();
   mqtt.loop();
+  if (pendingToggle) {
+    pendingToggle = false;
+    blinkAck();   // 4 blinks — the no-relay test
+    pulseRelay();
+  }
 }
