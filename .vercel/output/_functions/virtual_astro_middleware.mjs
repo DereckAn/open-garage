@@ -58,8 +58,8 @@ function getContextEnvVar(envVarName, contextOrLocals) {
 		"SSR": true
 	}, {
 		CLERK_SECRET_KEY: "sk_test_41lShaKjQYQhwoFpffeRsRKge1NkAXS1zUW5QzqCF3",
-		_: "/home/dereck/.bun/bin/bunx",
-		LESS: "-R"
+		LESS: "-R",
+		_: "/home/dereck/Documents/GIT/open-garage/node_modules/.bin/astro"
 	})[envVarName] || void 0;
 }
 function getSafeEnv(context) {
@@ -158,8 +158,8 @@ var createClerkClientWithOptions = (context, options) => createClerkClient({
 			"SSR": true
 		}, {
 			CLERK_SECRET_KEY: "sk_test_41lShaKjQYQhwoFpffeRsRKge1NkAXS1zUW5QzqCF3",
-			_: "/home/dereck/.bun/bin/bunx",
-			LESS: "-R"
+			LESS: "-R",
+			_: "/home/dereck/Documents/GIT/open-garage/node_modules/.bin/astro"
 		}).MODE
 	},
 	telemetry: {
