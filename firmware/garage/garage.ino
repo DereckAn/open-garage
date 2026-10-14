@@ -130,14 +130,21 @@ void connectWifi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.print("wifi");
-  while (WiFi.status() != WL_CONNECTED) { delay(400); Serial.print("."); }
+  unsigned long start = millis();
+  while (WiFi.status() != WL_CONNECTED) {
+    // ponytail: reboot is the recovery — a stuck WiFi stack never came back on its own
+    if (millis() - start > 30000) { Serial.println(" timeout, rebooting"); ESP.restart(); }
+    delay(400); Serial.print(".");
+  }
   Serial.printf(" ok %s\n", WiFi.localIP().toString().c_str());
   configTime(0, 0, "pool.ntp.org", "time.nist.gov"); // UTC; for staleness check
 }
 
 void connectMqtt() {
   String cid = "garage-door-" + String(DOOR_ID) + "-" + String((uint32_t)ESP.getEfuseMac(), HEX);
+  int fails = 0;
   while (!mqtt.connected()) {
+    if (WiFi.status() != WL_CONNECTED || ++fails > 20) { Serial.println("mqtt stuck, rebooting"); ESP.restart(); }
     Serial.print("mqtt...");
     if (mqtt.connect(cid.c_str(), MQTT_USER, MQTT_PASS)) {
       mqtt.subscribe(topic, 1); // QoS 1

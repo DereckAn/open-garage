@@ -1,6 +1,6 @@
 // Publishes one door command to EMQX via its HTTP REST API (no persistent MQTT session).
 // Topic: progreso/7a/garagedoor/<id>. qos 1, retain false (a retained toggle would
-// re-fire on every ESP32 reconnect). 200 = delivered, 202 = no subscriber yet — both ok.
+// re-fire on every ESP32 reconnect). 200 = delivered, 202 = no subscriber → door offline, error.
 
 const env = (k: string) => import.meta.env[k] ?? process.env[k];
 
@@ -26,6 +26,7 @@ export async function publishDoor(id: string, by: string) {
       signal: ctl.signal,
     });
     if (!res.ok) throw new Error(`EMQX publish failed: ${res.status} ${await res.text()}`);
+    if (res.status === 202) throw new Error('garage door offline (no subscriber)');
   } finally {
     clearTimeout(timer);
   }
