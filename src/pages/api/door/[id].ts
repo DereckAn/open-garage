@@ -8,9 +8,9 @@ export const POST: APIRoute = async ({ params, locals }) => {
   const id = params.id!;
   if (!DOORS.has(id)) return new Response('unknown door', { status: 404 });
 
-  // Middleware already enforced auth + email allowlist; read the email for the audit field.
+  // Middleware already enforced auth + access; invited users may have no email.
   const user = await locals.currentUser();
-  const by = user?.primaryEmailAddress?.emailAddress ?? 'unknown';
+  const by = user?.primaryEmailAddress?.emailAddress ?? user?.username ?? user?.id ?? 'unknown';
 
   try {
     await publishDoor(id, by);

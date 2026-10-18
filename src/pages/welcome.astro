@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Landing page for invite links/QRs from /admin: /welcome?t=<sign-in token>.
+---
+<Layout title="Bienvenido">
+  <main class="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-white">
+    <section class="w-full max-w-sm">
+      <h1 class="text-2xl font-bold">Garage</h1>
+      <p id="status" class="mt-3 text-slate-400">Entrando…</p>
+      <div id="passkey" class="hidden">
+        <button id="enable" class="mt-6 w-full rounded-xl bg-cyan-400 py-4 text-lg font-bold text-slate-950">
+          Activar Face ID / huella
+        </button>
+        <a href="/" class="mt-4 inline-block text-sm text-slate-400">Ahora no</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import { $clerkStore, $isLoadedStore } from '@clerk/astro/client';
+
+    const status = document.getElementById('status')!;
+    const passkeyBox = document.getElementById('passkey')!;
+    const ticket = new URLSearchParams(location.search).get('t');
+
+    const run = async () => {
+      const clerk = $clerkStore.get()!;
+      try {
+        if (ticket) {
+          // Someone else (e.g. the admin testing) may already be signed in on this device.
+          if (clerk.user) await clerk.signOut();
+          const signIn = await clerk.client!.signIn.create({ strategy: 'ticket', ticket });
+          if (signIn.status !== 'complete') throw new Error(signIn.status ?? 'incomplete');
+          await clerk.setActive({ session: signIn.createdSessionId });
+          history.replaceState(null, '', '/welcome'); // drop the used token from the URL
+        }
+        if (!clerk.user) throw new Error('no session');
+        if (clerk.user.passkeys.length) return location.replace('/');
+        status.textContent = 'Listo. Activa Face ID para entrar sin contraseña la próxima vez.';
+        passkeyBox.classList.remove('hidden');
+      } catch {
+        status.textContent = 'El enlace expiró o ya se usó. Pide uno nuevo.';
+      }
+    };
+
+    // WebAuthn needs a user gesture (Safari), hence the button.
+    document.getElementById('enable')!.addEventListener('click', async () => {
+      try {
+        await $clerkStore.get()!.user!.createPasskey();
+        location.replace('/');
+      } catch {
+        status.textContent = 'No se pudo activar. Puedes intentarlo de nuevo.';
+      }
+    });
+
+    const unsub = $isLoadedStore.subscribe((loaded) => {
+      if (!loaded) return;
+      queueMicrotask(() => unsub());
+      run();
+    });
+  </script>
+</Layout>

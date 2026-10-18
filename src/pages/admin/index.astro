@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { clerkClient } from '@clerk/astro/server';
+import QRCode from 'qrcode';
+
+// Middleware already restricts /admin to ADMIN_EMAILS.
+const clerk = clerkClient(Astro);
+const INVITE_TTL = 15 * 60; // seconds; tokens are also single-use
+
+let error = '';
+let invite: { name: string; url: string; svg: string } | null = null;
+
+const label = (u: { firstName: string | null; lastName: string | null; username: string | null; primaryEmailAddress: { emailAddress: string } | null; id: string }) =>
+  [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || u.primaryEmailAddress?.emailAddress || u.id;
+
+if (Astro.request.method === 'POST') {
+  // Astro's security.checkOrigin (on by default) rejects cross-site form posts.
+  const form = await Astro.request.formData();
+  const action = form.get('action');
+  const userId = String(form.get('userId') ?? '');
+  try {
+    if (action === 'create') {
+      const name = String(form.get('name') ?? '').trim();
+      if (!name) throw new Error('El nombre es obligatorio');
+      // Name only: the Clerk instance is invite + passkey only (email/username sign-in off).
+      const user = await clerk.users.createUser({
+        firstName: name,
+        skipPasswordRequirement: true,
+        publicMetadata: { allowed: true },
+      });
+      const { token } = await clerk.signInTokens.createSignInToken({ userId: user.id, expiresInSeconds: INVITE_TTL });
+      const url = `${Astro.url.origin}/welcome?t=${encodeURIComponent(token)}`;
+      invite = { name, url, svg: await QRCode.toString(url, { type: 'svg', margin: 1 }) };
+    } else if (action === 'invite') {
+      const user = await clerk.users.getUser(userId);
+      await clerk.users.updateUserMetadata(userId, { publicMetadata: { allowed: true } });
+      const { token } = await clerk.signInTokens.createSignInToken({ userId, expiresInSeconds: INVITE_TTL });
+      const url = `${Astro.url.origin}/welcome?t=${encodeURIComponent(token)}`;
+      invite = { name: label(user), url, svg: await QRCode.toString(url, { type: 'svg', margin: 1 }) };
+    } else if (action === 'allow' || action === 'revoke') {
+      await clerk.users.updateUserMetadata(userId, { publicMetadata: { allowed: action === 'allow' } });
+    }
+  } catch (e: any) {
+    error = e?.errors?.[0]?.longMessage ?? e?.errors?.[0]?.message ?? String(e);
+  }
+}
+
+// ponytail: first 100 users only; paginate if the garage ever has more.
+const { data: users } = await clerk.users.getUserList({ limit: 100, orderBy: '-created_at' });
+---
+<Layout title="Admin">
+  <main class="min-h-screen bg-slate-950 p-6 text-white">
+    <div class="mx-auto w-full max-w-md">
+      <header class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">Usuarios</h1>
+        <a href="/" class="text-sm text-cyan-400">← Puertas</a>
+      </header>
+
+      {error && <p class="mt-4 rounded-lg bg-rose-500/15 p-3 text-sm text-rose-300">{error}</p>}
+
+      {invite && (
+        <section class="mt-6 rounded-2xl bg-slate-900 p-6 text-center ring-1 ring-cyan-400/40">
+          <h2 class="font-bold">Invitación para {invite.name}</h2>
+          <p class="mt-1 text-sm text-slate-400">Válida 15 minutos, un solo uso.</p>
+          <div class="mx-auto mt-4 w-56 rounded-lg bg-white p-2" set:html={invite.svg} />
+          <input readonly value={invite.url} class="mt-4 w-full truncate rounded-lg bg-slate-800 px-3 py-2 text-xs text-slate-300" onclick="this.select()" />
+          <button type="button" id="share" data-url={invite.url}
+            class="mt-3 w-full rounded-xl bg-cyan-400 py-3 font-bold text-slate-950">Compartir enlace</button>
+        </section>
+      )}
+
+      <form method="post" class="mt-6 space-y-2 rounded-2xl bg-slate-900 p-4 ring-1 ring-white/10">
+        <input type="hidden" name="action" value="create" />
+        <p class="font-semibold">Nueva persona</p>
+        <input name="name" required placeholder="Nombre" class="w-full rounded-lg bg-slate-800 px-3 py-2" />
+        <button class="w-full rounded-xl bg-cyan-400 py-3 font-bold text-slate-950">Crear e invitar</button>
+      </form>
+
+      <ul class="mt-6 space-y-3">
+        {users.map((u) => {
+          const allowed = u.publicMetadata?.allowed === true;
+          return (
+            <li class="rounded-xl bg-slate-900 p-4 ring-1 ring-white/10">
+              <div class="flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="truncate font-semibold">{label(u)}</p>
+                  <p class="text-xs text-slate-400">{allowed ? 'Con acceso' : 'Sin acceso'}</p>
+                </div>
+                <div class="flex shrink-0 gap-2">
+                  <form method="post">
+                    <input type="hidden" name="userId" value={u.id} />
+                    <button name="action" value="invite" class="rounded-lg bg-slate-800 px-3 py-1.5 text-sm">QR</button>
+                  </form>
+                  <form method="post">
+                    <input type="hidden" name="userId" value={u.id} />
+                    <button name="action" value={allowed ? 'revoke' : 'allow'}
+                      class={`rounded-lg px-3 py-1.5 text-sm ${allowed ? 'bg-rose-500/15 text-rose-300' : 'bg-emerald-500/15 text-emerald-300'}`}>
+                      {allowed ? 'Quitar' : 'Permitir'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </main>
+
+  <script is:inline>
+    const btn = document.getElementById('share');
+    btn?.addEventListener('click', async () => {
+      const url = btn.dataset.url;
+      if (navigator.share) return navigator.share({ title: 'Acceso al garage', url }).catch(() => {});
+      await navigator.clipboard.writeText(url);
+      btn.textContent = 'Copiado ✓';
+    });
+  </script>
+</Layout>

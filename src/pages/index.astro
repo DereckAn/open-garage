@@ -12,7 +12,10 @@ const doors = [{ id: '1', name: 'Garage principal' }];
           <h1 class="text-2xl font-bold">Mis puertas</h1>
           <p class="text-sm text-slate-400">{doors.length} dispositivo{doors.length === 1 ? '' : 's'}</p>
         </div>
-        <UserButton />
+        <div class="flex items-center gap-3">
+          {Astro.locals.isAdmin && <a href="/admin" class="text-sm text-cyan-400">Admin</a>}
+          <UserButton />
+        </div>
       </header>
 
       <ul class="mt-6 space-y-3">

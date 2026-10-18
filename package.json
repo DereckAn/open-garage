@@ -16,6 +16,10 @@
     "@clerk/astro": "^4.0.16",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.4",
+    "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.6"
   }
 }
