@@ -1,16 +1,10 @@
 // Publishes one device command to EMQX via its HTTP REST API (no persistent MQTT session).
-// Topics: progreso/7a/garagedoor/<id>, progreso/7a/light/<id>. qos 1, retain false (a retained
+// Topics come from src/lib/devices.ts. qos 1, retain false (a retained
 // command would re-fire on every ESP32 reconnect). 200 = delivered, 202 = no subscriber → offline, error.
 
 const env = (k: string) => import.meta.env[k] ?? process.env[k];
 
-export const publishDoor = (id: string, by: string) =>
-  publish(`progreso/7a/garagedoor/${id}`, { action: 'toggle', door: id }, by);
-
-export const publishLight = (id: string, on: boolean, by: string) =>
-  publish(`progreso/7a/light/${id}`, { action: on ? 'on' : 'off', light: id }, by);
-
-async function publish(topic: string, cmd: Record<string, string>, by: string) {
+export async function publish(topic: string, cmd: Record<string, string>, by: string) {
   const host = env('EMQX_HOST');
   const auth = Buffer.from(`${env('EMQX_APP_ID')}:${env('EMQX_APP_SECRET')}`).toString('base64');
 

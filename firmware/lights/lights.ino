@@ -1,7 +1,7 @@
 // Bedroom lights ESP32-C3 firmware — subscribes to EMQX and switches 2 relays on/off.
 //
-// Flow: WiFi -> MQTT/TLS (EMQX 8883) -> subscribe progreso/7a/light/+
-//       -> on {action:"on"|"off"} for light 1 or 2, set that relay.
+// Flow: WiFi -> MQTT/TLS (EMQX 8883) -> subscribe progreso/7a/light/recamara/+
+//       -> on {action:"on"|"off"} for relay 1 or 2, set that relay.
 //
 // Same robustness as garage.ino: requestId dedup + ts staleness check.
 // Lights boot OFF after a power cut (relays released).
@@ -30,7 +30,7 @@ static const int   SEEN_SIZE = 8;                    // how many recent requestI
 
 static const char* MQTT_HOST = "jc748298.ala.us-east-1.emqxsl.com";
 static const int   MQTT_PORT = 8883;
-static const char* TOPIC     = "progreso/7a/light/+";
+static const char* TOPIC     = "progreso/7a/light/recamara/+"; // this board's lights; must match src/lib/devices.ts
 
 // EMQX Serverless TLS root (DigiCert Global Root G2 = emqxsl-ca.crt).
 static const char* CA_CERT = R"EOF(
