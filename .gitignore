@@ -1,5 +1,5 @@
 # firmware secrets + build output
-firmware/garage/secrets.h
+firmware/*/secrets.h
 firmware/build/
 
 # build output
