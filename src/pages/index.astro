@@ -116,7 +116,7 @@ import { DEVICES, byRoom } from '../lib/devices';
       }
     });
 
-    // ponytail: no on/off state shown — we only know what we last sent, not the relay
+    // ponytail: no on/off state shown — Encender/Apagar are explicit, so pressing again is always safe
     document.querySelectorAll('.light').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const status = btn.parentElement.querySelector('.light-status');
